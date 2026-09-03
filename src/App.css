@@ -1,0 +1,432 @@
+.app {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* html5-qrcode injects a <video> here; keep it inside the rounded card. */
+.scanner {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.scanner video {
+  width: 100% !important;
+  display: block;
+}
+
+.hint,
+.label {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.label {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.url {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+button {
+  appearance: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: var(--danger);
+}
+
+.error p {
+  margin: 0;
+}
+
+.shot {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0d0f14;
+}
+
+.shot--empty {
+  display: grid;
+  place-items: center;
+  min-height: 140px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.verdict {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.verdict--bad {
+  background: rgba(255, 107, 107, 0.14);
+  color: var(--danger);
+}
+
+.verdict--warn {
+  background: rgba(255, 176, 32, 0.14);
+  color: var(--warn);
+}
+
+.verdict--ok {
+  background: rgba(63, 195, 128, 0.14);
+  color: var(--ok);
+}
+
+.facts {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.facts dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.facts dd {
+  margin: 0 0 8px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.link {
+  color: var(--accent);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Indeterminate progress while urlscan works. */
+.bar {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.bar__fill {
+  height: 100%;
+  width: 40%;
+  border-radius: 999px;
+  background: var(--accent);
+  animation: slide 1.4s ease-in-out infinite;
+}
+
+@keyframes slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+.manual input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #0d0f14;
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.manual input::placeholder {
+  color: var(--muted);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.verdict--headline {
+  font-size: 1.05rem;
+  padding: 14px;
+  text-align: center;
+}
+
+.meters {
+  display: grid;
+  gap: 12px;
+}
+
+.meter__head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.bar__level {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.bar__level--bad { background: var(--danger); }
+.bar__level--warn { background: var(--warn); }
+.bar__level--ok { background: var(--ok); }
+
+.list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+}
+
+.list--danger {
+  color: var(--danger);
+}
+
+.details {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.details summary {
+  cursor: pointer;
+}
+
+.facts dd {
+  font-size: 1rem;
+}
+
+h3.label {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.copy {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.copy--muted {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.actions--row {
+  flex-direction: row;
+}
+
+.actions--row button {
+  flex: 1;
+}
+
+.button--ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.button--ghost:hover {
+  background: var(--border);
+  filter: none;
+}
+
+.button--small {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.map {
+  height: 320px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0d0f14;
+}
+
+.map__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.map__head .label {
+  margin: 0;
+}
+
+/* Leaflet ships light-themed controls and popups; tone them down. */
+.leaflet-container {
+  background: #0d0f14;
+  font: inherit;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--card);
+  color: var(--text);
+}
+
+.leaflet-control-attribution {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: var(--muted) !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--accent) !important;
+}
+
+.legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 14px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.shot-figure {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.shot-figure figcaption {
+  text-align: center;
+}
+
+
+
+.details-panel {
+  display: grid;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.scan-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.scan-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.scan-list li + li {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.scan-list .legend__dot {
+  margin-top: 6px;
+  flex: 0 0 auto;
+}
+
+.scan-list p {
+  margin: 2px 0 0;
+}
+
+.url--small {
+  font-size: 0.85rem;
+}
+
+.button--warn {
+  background: var(--danger);
+}
+
+.confirm {
+  display: grid;
+  gap: 12px;
+}
+
+.demo-note {
+  font-style: italic;
+}
+
+.map__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.map__controls .hint {
+  flex: 1;
+  min-width: 140px;
+}

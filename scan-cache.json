@@ -1,0 +1,182 @@
+{
+  "https://github.com/login": {
+    "cachedAt": "2026-08-29T04:31:39.686Z",
+    "scan": {
+      "uuid": "01a04bc9-35ec-76dd-995d-78c0c0e06596",
+      "scannedUrl": "https://github.com/login",
+      "finalDomain": "github.com",
+      "malicious": false,
+      "score": 0,
+      "screenshotUrl": "https://urlscan.io/screenshots/01a04bc9-35ec-76dd-995d-78c0c0e06596.png",
+      "reportUrl": "https://urlscan.io/result/01a04bc9-35ec-76dd-995d-78c0c0e06596/"
+    },
+    "analysis": {
+      "suspected_brand": "GitHub",
+      "impersonation_probability": 2,
+      "phishing_probability": 3,
+      "requests_sensitive_data": true,
+      "data_requested": [
+        "username or email address",
+        "password"
+      ],
+      "visual_signals": [
+        "Official GitHub Octocat logo",
+        "Standard GitHub sign-in layout with green Sign in button",
+        "Continue with Google and Continue with Apple SSO options",
+        "Footer links: Terms, Privacy, Docs, Contact GitHub Support, Manage cookies",
+        "No urgency banners, countdowns or scare text",
+        "Clean typography and correct spelling throughout"
+      ],
+      "reasons": [
+        "The page is served from github.com — GitHub's real domain.",
+        "The login form matches GitHub's genuine sign-in page exactly.",
+        "Asking for a username and password is normal on a real login page.",
+        "Independent scan found nothing malicious.",
+        "No urgency messages, misspellings or odd payment requests."
+      ],
+      "verdict": "safe"
+    }
+  },
+  "https://kinogo-films.vip/ru-serialy/?ysclid=mtdw6vr4vm361990995": {
+    "cachedAt": "2026-08-29T04:41:51.611Z",
+    "scan": {
+      "uuid": "01a04bd2-8858-730c-a41a-978c78245e3d",
+      "scannedUrl": "https://kinogo-films.vip/ru-serialy/?ysclid=mtdw6vr4vm361990995",
+      "finalDomain": "kinogo-films.vip",
+      "malicious": false,
+      "score": 0,
+      "screenshotUrl": "https://urlscan.io/screenshots/01a04bd2-8858-730c-a41a-978c78245e3d.png",
+      "reportUrl": "https://urlscan.io/result/01a04bd2-8858-730c-a41a-978c78245e3d/"
+    },
+    "analysis": {
+      "suspected_brand": "Kinogo (Russian-language pirate movie streaming site)",
+      "impersonation_probability": 25,
+      "phishing_probability": 15,
+      "requests_sensitive_data": false,
+      "data_requested": [],
+      "visual_signals": [
+        "\"KINOGO\" wordmark top-left, matching the domain kinogo-films.vip",
+        "Standard pirate-streaming layout: film poster carousel, genre counts, year lists",
+        "Russian-language interface with login/registration links (\"Вход / Регистрация\") but no form shown on this page",
+        "Series detail page for a Russian TV drama with description and \"Смотреть онлайн\" button",
+        "No Australian brand, no payment prompt, no urgency banner"
+      ],
+      "reasons": [
+        "This is a Russian-language pirate movie/TV streaming site, not an Australian service or government page.",
+        "The brand shown (Kinogo) matches the domain kinogo-films.vip, so it is not impersonating a bank, government or delivery brand.",
+        "The visible page asks for nothing — no card, password or ID details on screen.",
+        "Kinogo-style clone sites are unofficial and notorious for aggressive ads, fake players and malware downloads, so it is not a page you should be reaching from a street QR code.",
+        "A QR code in the street leading to an offshore piracy site is a strong sign the sticker is not legitimate — don't log in, register or install anything from it."
+      ],
+      "verdict": "suspicious"
+    }
+  },
+  "https://help-l-edg-er-liv-e.typedream.app/": {
+    "cachedAt": "2026-08-29T04:59:40.294Z",
+    "scan": {
+      "uuid": "01a04be2-d73f-7686-beb1-e5e232403f30",
+      "scannedUrl": "https://help-l-edg-er-liv-e.typedream.app/",
+      "finalDomain": "help-l-edg-er-liv-e.typedream.app",
+      "malicious": true,
+      "score": 100,
+      "screenshotUrl": "https://urlscan.io/screenshots/01a04be2-d73f-7686-beb1-e5e232403f30.png",
+      "reportUrl": "https://urlscan.io/result/01a04be2-d73f-7686-beb1-e5e232403f30/"
+    },
+    "analysis": {
+      "suspected_brand": "Ledger (Ledger Live crypto wallet)",
+      "impersonation_probability": 99,
+      "phishing_probability": 97,
+      "requests_sensitive_data": true,
+      "data_requested": [
+        "wallet software download (likely malicious installer)",
+        "recovery phrase / seed words (typical next step on Ledger clone pages)"
+      ],
+      "visual_signals": [
+        "Pixel-accurate copy of the official Ledger Live landing page, including logo, dark theme and purple accent",
+        "\"Trusted by over 7 million customers\" trust badge lifted from the real site",
+        "Download buttons for Windows, macOS, Linux, iOS and Android — the classic fake-wallet delivery mechanism",
+        "\"Made in Typedream\" badge bottom-right, showing the page was thrown together on a free site builder, not Ledger's own platform",
+        "Promo banner for \"Ledger Flex\" copied to add legitimacy"
+      ],
+      "reasons": [
+        "The page looks exactly like Ledger's official site, but it is served from help-l-edg-er-liv-e.typedream.app — not ledger.com.",
+        "The domain deliberately scrambles the words 'ledger live' with dashes to fool a quick glance.",
+        "It sits on a free website builder (Typedream), which the real Ledger would never use for its wallet downloads.",
+        "Security scanners already flag this address as malicious with the maximum risk score.",
+        "Fake Ledger Live downloads are used to steal your 24-word recovery phrase and drain your crypto wallet.",
+        "Do not download anything here. Get Ledger Live only by typing ledger.com yourself."
+      ],
+      "verdict": "dangerous"
+    }
+  },
+  "https://windows-ledger-live.typedream.app/": {
+    "cachedAt": "2026-08-29T05:26:31.119Z",
+    "scan": {
+      "uuid": "01a04bfb-5c04-73b9-9298-f1c86e6930c2",
+      "scannedUrl": "https://windows-ledger-live.typedream.app/",
+      "finalDomain": "windows-ledger-live.typedream.app",
+      "malicious": false,
+      "score": 0,
+      "screenshotUrl": "https://urlscan.io/screenshots/01a04bfb-5c04-73b9-9298-f1c86e6930c2.png",
+      "reportUrl": "https://urlscan.io/result/01a04bfb-5c04-73b9-9298-f1c86e6930c2/"
+    },
+    "analysis": {
+      "suspected_brand": "Ledger (Ledger Live)",
+      "impersonation_probability": 92,
+      "phishing_probability": 80,
+      "requests_sensitive_data": false,
+      "data_requested": [],
+      "visual_signals": [
+        "Page title 'Ledger Live Download – Secure Hardware Wallet Management' uses Ledger's product branding",
+        "Plain text-heavy landing page, no official Ledger logo or design system",
+        "'Made in Typedream' badge bottom-right revealing a free website builder host",
+        "Subdomain 'windows-ledger-live' crafted to look like an official download page",
+        "Ironic advice to 'Download Ledger Live only from ledger.com' while not being ledger.com"
+      ],
+      "reasons": [
+        "Presents itself as the official Ledger Live download page but is hosted on windows-ledger-live.typedream.app, a free page-builder subdomain — Ledger only publishes at ledger.com.",
+        "The 'Made in Typedream' badge shows this is a throwaway site anyone can create in minutes.",
+        "Fake Ledger Live download pages are one of the most common crypto scams; the installer or follow-on page typically asks for your 24-word recovery phrase and drains the wallet.",
+        "This screenshot shows no form yet, but download links on such pages lead to malicious software or seed-phrase capture.",
+        "Crypto wallet software should only ever be downloaded from the vendor's own domain — do not proceed from a QR code sticker."
+      ],
+      "verdict": "dangerous"
+    }
+  },
+  "https://github.com/": {
+    "cachedAt": "2026-08-29T05:58:54.465Z",
+    "scan": {
+      "uuid": "01a04c18-a6a3-73c9-888d-23ea151eebc1",
+      "scannedUrl": "https://github.com/",
+      "finalDomain": "github.com",
+      "malicious": false,
+      "score": 0,
+      "screenshotUrl": "https://urlscan.io/screenshots/01a04c18-a6a3-73c9-888d-23ea151eebc1.png",
+      "reportUrl": "https://urlscan.io/result/01a04c18-a6a3-73c9-888d-23ea151eebc1/"
+    },
+    "analysis": {
+      "suspected_brand": "GitHub",
+      "impersonation_probability": 2,
+      "phishing_probability": 2,
+      "requests_sensitive_data": false,
+      "data_requested": [
+        "email address (optional sign-up field)"
+      ],
+      "visual_signals": [
+        "Official GitHub Octocat logo top-left",
+        "Standard GitHub navigation: Platform, Solutions, Resources, Open Source, Enterprise, Pricing",
+        "Familiar dark navy marketing hero with 'The future of building happens together'",
+        "Green 'Sign up for GitHub' button matching GitHub's brand styling",
+        "No urgency banners, countdown timers or warnings",
+        "Clean typography and spelling, no errors"
+      ],
+      "reasons": [
+        "The page is GitHub's own homepage and it is served from github.com — brand and domain match.",
+        "No password, card or ID details are requested; only an optional email box to start a free sign-up.",
+        "Layout, logo and navigation match the real GitHub marketing site exactly.",
+        "Security scan found nothing malicious (score 0)."
+      ],
+      "verdict": "safe"
+    }
+  }
+}
