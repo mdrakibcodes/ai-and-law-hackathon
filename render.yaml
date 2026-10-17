@@ -17,5 +17,3 @@ services:
         sync: false
       - key: URLSCAN_KEY
         sync: false
-      - key: APP_PASSWORD
-        sync: false

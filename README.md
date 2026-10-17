@@ -26,10 +26,10 @@ To deploy:
 1. Use the pushed branch `codex/openai-render-demo` (or merge it into your deployment branch).
 2. Sign in at https://dashboard.render.com/ and choose **New → Blueprint**.
 3. Connect this repository, select `codex/openai-render-demo`, and use its `render.yaml` configuration.
-4. Set `APP_OPENAI_API_KEY`, `URLSCAN_KEY`, and a private `APP_PASSWORD`
+4. Set `APP_OPENAI_API_KEY` and `URLSCAN_KEY`
    in Render's secure environment settings. Do not commit their values.
-5. Deploy, then open the HTTPS address Render provides. Sign in with any
-   username and your `APP_PASSWORD`. Share the address/password privately.
+5. Deploy, then open the HTTPS address Render provides. The app opens directly
+   without a username or password.
 6. On your phone, paste `https://example.com/` and check that a verdict appears.
    Then allow camera access to scan a QR code; allow location only when testing
    the map/location feature.
@@ -41,8 +41,10 @@ empty, without publishing the repository's existing pins or photos. For durable
 storage, configure a database or a persistent disk on a suitable paid plan.
 OpenAI and urlscan usage still follows those providers' billing/quotas.
 
-The production server requires all three settings when `NODE_ENV=production`.
-`GET /healthz` is a public health check; other routes require the demo password.
-Run one server instance when using the JSON stores. This is a private demo setup;
-a public multi-user launch needs user authentication, quotas and durable storage.
+The production server requires both API keys when `NODE_ENV=production`.
+`GET /healthz` is a public health check. The app and scan endpoints are public;
+API keys stay server-side, and visitor requests use the configured API balance.
+Any old `APP_PASSWORD` setting is ignored and can be removed from Render.
+Run one server instance when using the JSON stores. A larger public launch needs
+usage quotas and durable storage.
 Vite's `npm run preview` does not run the backend.

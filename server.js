@@ -1,7 +1,6 @@
 import express from 'express'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import { HttpsProxyAgent } from 'https-proxy-agent'
-import { timingSafeEqual } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -9,28 +8,12 @@ import scanCache from './vite-plugin-scan-cache.js'
 
 const root = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
-const password = process.env.APP_PASSWORD
 const production = process.env.NODE_ENV === 'production'
-if (production && (!password || !process.env.URLSCAN_KEY || !process.env.APP_OPENAI_API_KEY)) {
-  throw new Error('Set APP_PASSWORD, URLSCAN_KEY and APP_OPENAI_API_KEY before starting production.')
+if (production && (!process.env.URLSCAN_KEY || !process.env.APP_OPENAI_API_KEY)) {
+  throw new Error('Set URLSCAN_KEY and APP_OPENAI_API_KEY before starting production.')
 }
 app.disable('x-powered-by')
 app.get('/healthz', (_req, res) => res.json({ ok: true }))
-// Protect the demo and its paid API calls with the same browser login.
-app.use((req, res, next) => {
-  if (!password) return next()
-  const header = req.headers.authorization ?? ''
-  let supplied = ''
-  if (header.startsWith('Basic ')) {
-    const decoded = Buffer.from(header.slice(6), 'base64').toString()
-    supplied = decoded.slice(decoded.indexOf(':') + 1)
-  }
-  const actual = Buffer.from(supplied)
-  const expected = Buffer.from(password)
-  if (actual.length === expected.length && timingSafeEqual(actual, expected)) return next()
-  res.set('WWW-Authenticate', 'Basic realm="QR Check", charset="UTF-8"')
-  return res.status(401).send('Sign in to test QR Check. Use any username and the configured demo password.')
-})
 app.use((_req, res, next) => {
   res.set('X-Content-Type-Options', 'nosniff')
   res.set('Referrer-Policy', 'same-origin')
@@ -42,7 +25,7 @@ const errorHandler = (_err, _req, res) => {
   if (!res.headersSent) res.writeHead(502, { 'Content-Type': 'application/json' })
   res.end(JSON.stringify({ error: { message: 'Upstream service is unavailable. Please retry.' } }))
 }
-// Limit which authenticated upstream operations this demo exposes.
+// Limit which upstream operations this demo exposes.
 app.use('/openai', (req, res, next) => {
   if (req.method !== 'POST' || req.path !== '/v1/chat/completions') return res.sendStatus(404)
   next()
