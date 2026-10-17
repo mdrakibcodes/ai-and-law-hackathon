@@ -132,3 +132,18 @@ test('readable DOM can be analysed when a screenshot is unavailable', async t =>
   assert.equal(ai.options.body.messages[1].content.some(c => c.type === 'image_url'), false)
   assert.match(ai.options.body.messages[1].content[0].text, /workshop/)
 })
+
+test('visible app landing page is allowed while a hidden private document remains unverified', async t => {
+  const landing = fixture(t, { analysisOverride: {
+    suspected_brand: 'ChatGPT', page_status: 'readable', verdict: 'safe',
+    reasons: ['The public landing page has a message composer and optional sign-in buttons.'],
+  } })
+  const result = await landing.service('https://www.chatgpt.com/')
+  assert.equal(result.analysis.verdict, 'safe')
+  assert.equal(safeDestination(result.scan.scannedUrl, result.scan, result.analysis), result.scan.scannedUrl)
+  const hidden = fixture(t, { analysisOverride: {
+    page_status: 'login_required', verdict: 'unverified', reasons: ['Sign-in hides the requested private form.'],
+  } })
+  const privateResult = await hidden.service('https://example.com/private-survey')
+  assert.equal(safeDestination(privateResult.scan.scannedUrl, privateResult.scan, privateResult.analysis), null)
+})

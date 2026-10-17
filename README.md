@@ -69,7 +69,7 @@ Vercel deployment cannot run this app's scan backend.
 Run `npm test` for polling, safe navigation, malicious-result override, screenshot
 failure, refusal and server-cache tests. Incoming URL payloads are limited to 8KB,
 upstream responses to 12MB, concurrent scans to 3, and new scans to 10/minute per
-server instance. Runtime verified results live in `verified-scans-v2.json` under
+server instance. Runtime verified results live in `verified-scans-v3.json` under
 `DATA_DIR`; the legacy public cache is never trusted to authorize navigation.
 
 
@@ -87,5 +87,19 @@ Unverified means a scan was declined, login/CAPTCHA/access denial obscured the
 requested content, or the page could not be inspected. It does not mean phishing
 was found. Unverified pages do not get scam reporting or map-warning prompts and
 are not automatically opened. Known form/social hosts are not blanket allowlisted.
-The new calibration uses `verified-scans-v2.json`, ignoring cached verdicts from
+The new calibration uses `verified-scans-v3.json`, ignoring cached verdicts from
 the older policy. Each previously cached URL is checked again after deployment.
+
+
+Public homepages are assessed as public homepages: visible Log in/Sign up buttons,
+account-only features, a sparse chat interface, or small footer text do not by
+themselves make the landing page inaccessible. A login wall replacing the actual
+requested private document/form remains unverified. Brand identity and inspection
+status are assessed separately. The landing-page policy uses a new v3 cache to
+invalidate older classifications.
+
+The classifier receives explicit current domain context for ChatGPT: `chatgpt.com`
+is the official current host; `chat.openai.com` is the legacy address. This avoids
+outdated model knowledge treating the canonical host as a lookalike. It does not
+bypass content inspection or malicious scanner findings, and does not extend to
+similar-looking or suffixed hostnames.

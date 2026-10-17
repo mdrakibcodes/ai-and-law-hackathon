@@ -19,7 +19,7 @@ export function createScanService({ env = process.env, dataDir, request: customR
   const agent = proxy ? new HttpsProxyAgent(proxy) : undefined
   // A separate store excludes all historic client-supplied verdicts.
   fs.mkdirSync(dataDir, { recursive: true })
-  const cacheFile = path.join(dataDir, 'verified-scans-v2.json')
+  const cacheFile = path.join(dataDir, 'verified-scans-v3.json')
   let cache = {}
   try { cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8')) } catch { /* First startup. */ }
   const inFlight = new Map()

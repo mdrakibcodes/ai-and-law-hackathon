@@ -53,7 +53,7 @@ function Result({ scan, analysis, decodedUrl, photo, fromCache, onScanAgain }) {
       </dl>
 
       {analysis.verdict === 'unverified' && (
-        <p className="copy">The page could not be inspected fully. It has not been opened. Try again with a public link that does not require sign-in.</p>
+        <p className="copy">There was not enough evidence to assess this page. It has not been opened. The reasons below explain what could not be checked.</p>
       )}
 
       {analysis.verdict !== 'unverified' && <div className="meters">
