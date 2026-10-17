@@ -23,9 +23,9 @@ Use Node 24. Keys are never built into the frontend.
 
 To deploy:
 
-1. Push these changes to your GitHub repository.
+1. Use the pushed branch `codex/openai-render-demo` (or merge it into your deployment branch).
 2. Sign in at https://dashboard.render.com/ and choose **New → Blueprint**.
-3. Connect this repository and use its `render.yaml` configuration.
+3. Connect this repository, select `codex/openai-render-demo`, and use its `render.yaml` configuration.
 4. Set `APP_OPENAI_API_KEY`, `URLSCAN_KEY`, and a private `APP_PASSWORD`
    in Render's secure environment settings. Do not commit their values.
 5. Deploy, then open the HTTPS address Render provides. Sign in with any
