@@ -69,5 +69,23 @@ Vercel deployment cannot run this app's scan backend.
 Run `npm test` for polling, safe navigation, malicious-result override, screenshot
 failure, refusal and server-cache tests. Incoming URL payloads are limited to 8KB,
 upstream responses to 12MB, concurrent scans to 3, and new scans to 10/minute per
-server instance. Runtime verified results live in `verified-scans-v1.json` under
+server instance. Runtime verified results live in `verified-scans-v2.json` under
 `DATA_DIR`; the legacy public cache is never trusted to authorize navigation.
+
+
+### Websites, surveys and unavailable pages
+
+Analysis supports unfamiliar/custom domains and shared form hosts. It inspects
+sandbox screenshots plus rendered page text, field labels/types and form actions
+when urlscan supplies the DOM. Readable page text can also be assessed if the
+screenshot is unavailable. It never fills in or submits a survey. Ordinary
+ratings, comments, names and optional contact details alone are not phishing;
+banking passwords, OTPs or unrelated sensitive requests are concrete warning signs.
+
+The analysis separates **safe**, **suspicious**, **dangerous**, and **unverified**.
+Unverified means a scan was declined, login/CAPTCHA/access denial obscured the
+requested content, or the page could not be inspected. It does not mean phishing
+was found. Unverified pages do not get scam reporting or map-warning prompts and
+are not automatically opened. Known form/social hosts are not blanket allowlisted.
+The new calibration uses `verified-scans-v2.json`, ignoring cached verdicts from
+the older policy. Each previously cached URL is checked again after deployment.

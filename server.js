@@ -12,7 +12,7 @@ if (production && (!process.env.URLSCAN_KEY || !process.env.APP_OPENAI_API_KEY))
   throw new Error('Set URLSCAN_KEY and APP_OPENAI_API_KEY before starting production.')
 }
 app.disable('x-powered-by')
-app.get('/healthz', (_req, res) => res.json({ ok: true }))
+app.get('/healthz', (_req, res) => res.json({ ok: true, analysisPolicy: 'surveys-v2', commit: process.env.RENDER_GIT_COMMIT || null }))
 app.use((_req, res, next) => {
   res.set('X-Content-Type-Options', 'nosniff')
   res.set('Referrer-Policy', 'same-origin')

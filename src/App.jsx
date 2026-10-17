@@ -158,8 +158,9 @@ function App() {
 
           {pipeline.status === 'error' && (
             <section className="card">
-              <div className="error">
-                <p>Could not verify this website. It has not been opened.</p>
+              <div className="verdict verdict--warn">
+                <p>Unable to verify — no safety verdict</p>
+                <p>No safety assessment was completed. The website has not been opened.</p>
                 <p>{pipeline.error}</p>
               </div>
               <button type="button" onClick={scanAgain}>
@@ -178,12 +179,12 @@ function App() {
                 fromCache={pipeline.fromCache}
                 onScanAgain={scanAgain}
               />
-              <ShareLocation
+              {pipeline.analysis.verdict !== 'unverified' && <ShareLocation
                 scan={pipeline.scan}
                 analysis={pipeline.analysis}
                 photo={photo}
                 onShared={(pin) => showMap(pin)}
-              />
+              />}
             </>
           )}
         </>

@@ -2,6 +2,7 @@ import https from 'node:https'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 import fs from 'node:fs'
 import path from 'node:path'
+import { summarizePage } from './page-evidence.js'
 import { analysisRequest, parseAnalysis } from './src/analyze.js'
 
 export function normalizeUrl(value) {
@@ -18,7 +19,7 @@ export function createScanService({ env = process.env, dataDir, request: customR
   const agent = proxy ? new HttpsProxyAgent(proxy) : undefined
   // A separate store excludes all historic client-supplied verdicts.
   fs.mkdirSync(dataDir, { recursive: true })
-  const cacheFile = path.join(dataDir, 'verified-scans-v1.json')
+  const cacheFile = path.join(dataDir, 'verified-scans-v2.json')
   let cache = {}
   try { cache = JSON.parse(fs.readFileSync(cacheFile, 'utf8')) } catch { /* First startup. */ }
   const inFlight = new Map()
@@ -78,7 +79,9 @@ export function createScanService({ env = process.env, dataDir, request: customR
       }
       if (!result) throw new Error('Website scanning took too long. Please retry; the site has not been opened.')
       const scan = {
-        uuid, scannedUrl: url, finalDomain: result.page?.domain ?? null,
+        uuid, scannedUrl: url, finalUrl: result.page?.url ?? null,
+        title: result.page?.title ?? null, pageStatusCode: result.page?.status ?? null,
+        finalDomain: result.page?.domain ?? null,
         malicious: result.verdicts?.overall?.malicious ?? null,
         score: result.verdicts?.overall?.score ?? null,
         screenshotUrl: `https://urlscan.io/screenshots/${uuid}.png`,
@@ -90,17 +93,29 @@ export function createScanService({ env = process.env, dataDir, request: customR
         if (image.status !== 404) break
         await pause(2000)
       }
-      if (image.status !== 200 || !image.bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) {
-        throw new Error('The website screenshot is unavailable. Safety could not be verified, so the site has not been opened.')
+      const imageAvailable = image.status === 200 && image.bytes.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10]))
+      if (!imageAvailable) scan.screenshotUrl = null
+      let pageEvidence = null
+      // DOM extraction supplies survey questions which screenshots can truncate.
+      // An unavailable DOM is optional; a readable screenshot can still be assessed.
+      try {
+        const dom = await upstream(`/dom/${uuid}/`)
+        if (dom.status === 200 && dom.bytes.length) {
+          pageEvidence = summarizePage(dom.bytes.toString(), scan.finalUrl || url)
+        }
+      } catch { /* Keep screenshot analysis available if optional DOM retrieval fails. */ }
+      if (!imageAvailable && (!pageEvidence || pageEvidence.text.length < 80)) {
+        throw new Error('The website screenshot is unavailable and there is not enough page text to inspect. No safety verdict is available.')
       }
       const ai = await request('https://api.openai.com/v1/chat/completions', {
         method: 'POST', headers: { Authorization: `Bearer ${env.APP_OPENAI_API_KEY}` },
-        body: analysisRequest(scan, image.bytes.toString('base64')),
+        body: analysisRequest(scan, imageAvailable ? image.bytes.toString('base64') : null, pageEvidence),
       })
       if (ai.status !== 200) throw new Error(`AI analysis is unavailable (${ai.status}). The site has not been opened.`)
       const analysis = parseAnalysis(json(ai))
+      if (analysis.page_status !== 'readable') analysis.verdict = 'unverified'
       if (scan.malicious === true || !scan.finalDomain) {
-        analysis.verdict = scan.malicious ? 'dangerous' : 'suspicious'
+        analysis.verdict = scan.malicious ? 'dangerous' : 'unverified'
         analysis.reasons.unshift(scan.malicious ? 'The website scan flagged this page as malicious.' : 'The serving domain could not be verified.')
       }
       const entry = { cachedAt: new Date().toISOString(), scan, analysis }
@@ -124,7 +139,7 @@ export function installCheckRoute(app, options) {
       res.setHeader('Cache-Control', 'no-store')
       res.json(result)
     } catch (error) {
-      res.status(422).json({ message: error.message })
+      res.status(422).json({ assessment: 'unverified', message: error.message })
     }
   })
 }

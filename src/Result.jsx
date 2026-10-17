@@ -3,7 +3,8 @@ import Screenshot from './Screenshot.jsx'
 
 const VERDICT_COPY = {
   dangerous: { tone: 'bad', title: 'Unsafe — website blocked' },
-  suspicious: { tone: 'warn', title: 'Safety uncertain — website blocked' },
+  suspicious: { tone: 'warn', title: 'Warning signs found — website blocked' },
+  unverified: { tone: 'warn', title: 'Unable to verify — no safety verdict' },
   safe: { tone: 'ok', title: 'Safe verdict — opening website…' },
 }
 
@@ -48,12 +49,17 @@ function Result({ scan, analysis, decodedUrl, photo, fromCache, onScanAgain }) {
         <dd>{analysis.suspected_brand}</dd>
         <dt>Actually served by</dt>
         <dd className="url">{finalDomain ?? 'unknown'}</dd>
+        {analysis.page_type === 'feedback_survey' && <><dt>Page type</dt><dd>Feedback / survey form</dd></>}
       </dl>
 
-      <div className="meters">
+      {analysis.verdict === 'unverified' && (
+        <p className="copy">The page could not be inspected fully. It has not been opened. Try again with a public link that does not require sign-in.</p>
+      )}
+
+      {analysis.verdict !== 'unverified' && <div className="meters">
         <Meter label="Impersonation" value={analysis.impersonation_probability} />
         <Meter label="Phishing" value={analysis.phishing_probability} />
-      </div>
+      </div>}
 
       {redirected && (
         <p className="verdict verdict--warn">This link redirected to a different domain.</p>
@@ -100,7 +106,6 @@ function Result({ scan, analysis, decodedUrl, photo, fromCache, onScanAgain }) {
       )}
 
 
-
       <ReportScam analysis={analysis} domain={finalDomain} />
 
       <div className="actions">
@@ -126,7 +131,7 @@ function Result({ scan, analysis, decodedUrl, photo, fromCache, onScanAgain }) {
 function ReportScam({ analysis, domain }) {
   const [state, setState] = useState('idle') // idle | confirming | sent
 
-  if (analysis.verdict === 'safe') return null
+  if (!['suspicious', 'dangerous'].includes(analysis.verdict)) return null
 
   if (state === 'sent') {
     return (
