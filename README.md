@@ -48,3 +48,26 @@ Any old `APP_PASSWORD` setting is ignored and can be removed from Render.
 Run one server instance when using the JSON stores. A larger public launch needs
 usage quotas and durable storage.
 Vite's `npm run preview` does not run the backend.
+
+
+## Scan and navigation flow
+
+The browser sends only the URL to `POST /api/check`. The Node backend submits and
+polls the urlscan scan, retries screenshots that are not ready yet, requests a
+fixed OpenAI analysis, and stores its own verdict for up to one hour. The public
+API does not accept client-written scan verdicts or arbitrary OpenAI requests.
+Only a safe verdict with no malicious scanner finding opens the original HTTP(S)
+URL automatically in the same tab. Suspicious/unsafe results, unavailable screenshots,
+login walls and failed checks stay in QR Check without a proceed button.
+The AI assessment is probabilistic, not a guarantee that a website is safe.
+
+Use the Render URL https://qr-check-u0av.onrender.com for testing. The included
+`vercel.json` redirects an old Vercel deployment to this backend-backed site;
+Vercel must deploy the updated branch for that redirect to apply. A static-only
+Vercel deployment cannot run this app's scan backend.
+
+Run `npm test` for polling, safe navigation, malicious-result override, screenshot
+failure, refusal and server-cache tests. Incoming URL payloads are limited to 8KB,
+upstream responses to 12MB, concurrent scans to 3, and new scans to 10/minute per
+server instance. Runtime verified results live in `verified-scans-v1.json` under
+`DATA_DIR`; the legacy public cache is never trusted to authorize navigation.

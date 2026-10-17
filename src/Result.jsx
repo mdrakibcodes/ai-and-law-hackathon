@@ -2,9 +2,9 @@ import { useState } from 'react'
 import Screenshot from './Screenshot.jsx'
 
 const VERDICT_COPY = {
-  dangerous: { tone: 'bad', title: 'Do not enter anything on this page' },
-  suspicious: { tone: 'warn', title: 'Treat this page with caution' },
-  safe: { tone: 'ok', title: 'No signs of a scam' },
+  dangerous: { tone: 'bad', title: 'Unsafe — website blocked' },
+  suspicious: { tone: 'warn', title: 'Safety uncertain — website blocked' },
+  safe: { tone: 'ok', title: 'Safe verdict — opening website…' },
 }
 
 /** Host of the URL the QR code actually contained, before any redirects. */
@@ -99,7 +99,7 @@ function Result({ scan, analysis, decodedUrl, photo, fromCache, onScanAgain }) {
         </details>
       )}
 
-      <ContinueToSite url={scannedUrl ?? decodedUrl} verdict={analysis.verdict} />
+
 
       <ReportScam analysis={analysis} domain={finalDomain} />
 
@@ -115,55 +115,6 @@ function Result({ scan, analysis, decodedUrl, photo, fromCache, onScanAgain }) {
         </button>
       </div>
     </section>
-  )
-}
-
-/**
- * Offers a way through to the site itself. Safe pages get a plain button;
- * suspicious ones require a second, deliberate tap; dangerous ones get no
- * route through at all — if we are 90% sure it is a scam, handing over a
- * one-tap link undoes the point of the app.
- */
-function ContinueToSite({ url, verdict }) {
-  const [confirming, setConfirming] = useState(false)
-
-  if (verdict === 'dangerous' || !url) return null
-
-  // noreferrer matters here: these pages are hostile by assumption, and we do
-  // not want to leak where the visit came from.
-  const open = () => window.open(url, '_blank', 'noopener,noreferrer')
-
-  if (verdict === 'safe') {
-    return (
-      <button type="button" onClick={open}>
-        Continue to the website
-      </button>
-    )
-  }
-
-  if (!confirming) {
-    return (
-      <button type="button" className="button--ghost" onClick={() => setConfirming(true)}>
-        Proceed anyway
-      </button>
-    )
-  }
-
-  return (
-    <div className="confirm">
-      <p className="verdict verdict--warn">
-        This page showed warning signs. Do not enter passwords, card details or
-        ID documents if you continue.
-      </p>
-      <div className="actions actions--row">
-        <button type="button" className="button--ghost" onClick={() => setConfirming(false)}>
-          Go back
-        </button>
-        <button type="button" className="button--warn" onClick={open}>
-          Continue with caution
-        </button>
-      </div>
-    </div>
   )
 }
 

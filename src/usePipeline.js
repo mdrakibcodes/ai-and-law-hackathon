@@ -1,17 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { analyzeScreenshot } from './analyze.js'
-import { readCache, writeCache } from './cache.js'
-import { submitAndPoll } from './urlscan.js'
 
-/**
- * Drives the whole check: cache -> urlscan sandbox -> Claude vision.
- *
- * A cache hit returns the previous verdict instantly, so a URL we have already
- * scanned always shows the same result — which keeps the demo working when
- * urlscan is slow, rate-limited, or the venue wifi drops.
- *
- * status: 'idle' | 'cached' | 'scanning' | 'analysing' | 'done' | 'error'
- */
+// All scan evidence, analysis and verdict caching are owned by the backend.
 export function usePipeline() {
   const [status, setStatus] = useState('idle')
   const [scan, setScan] = useState(null)
@@ -43,30 +32,21 @@ export function usePipeline() {
     setError(null)
 
     try {
-      const hit = await readCache(url)
-      if (!alive()) return
-      if (hit?.scan && hit?.analysis) {
-        setScan(hit.scan)
-        setAnalysis(hit.analysis)
-        setFromCache(true)
-        setStatus('done')
-        return
-      }
-
       setStatus('scanning')
-      const scanResult = await submitAndPoll(url, { isCancelled: () => !alive() })
-      if (!alive() || !scanResult) return
-      setScan(scanResult)
-
-      setStatus('analysing')
-      const analysisResult = await analyzeScreenshot(scanResult)
+      const response = await fetch('/api/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url }),
+      })
+      const result = await response.json().catch(() => null)
       if (!alive()) return
-      setAnalysis(analysisResult)
+      if (!response.ok || !result?.scan || !result?.analysis) {
+        throw new Error(result?.message || 'The scanner is unavailable at this address. Please use the QR Check Render app and try again.')
+      }
+      setScan(result.scan)
+      setAnalysis(result.analysis)
+      setFromCache(Boolean(result.fromCache))
       setStatus('done')
-
-      // Only cache a complete result — a half-finished entry would poison the
-      // demo more surely than no entry at all.
-      writeCache(url, { cachedAt: new Date().toISOString(), scan: scanResult, analysis: analysisResult })
     } catch (err) {
       if (!alive()) return
       setError(err.message)

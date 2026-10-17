@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import MapView from './MapView.jsx'
 import Result from './Result.jsx'
 import Scanner from './Scanner.jsx'
 import ShareLocation from './ShareLocation.jsx'
 import usePipeline from './usePipeline.js'
+import { safeDestination } from './navigation.js'
 import './App.css'
 
 /** urlscan only accepts real http(s) URLs; QR codes can hold any text. */
@@ -18,7 +19,7 @@ function isHttpUrl(text) {
 
 const PROGRESS = {
   cached: 'Checking whether we have seen this link before…',
-  scanning: 'Opening the page in a sandbox and taking a screenshot…',
+  scanning: 'Checking the website and analysing it with AI…',
   analysing: 'Analysing website…',
 }
 
@@ -31,6 +32,16 @@ function App() {
   const [photo, setPhoto] = useState(null)
   const pipeline = usePipeline()
 
+  const openedRef = useRef(null)
+  useEffect(() => {
+    if (stage !== 'check' || pipeline.status !== 'done') return
+    const destination = safeDestination(url, pipeline.scan, pipeline.analysis)
+    if (destination && openedRef.current !== destination) {
+      openedRef.current = destination
+      window.location.assign(destination)
+    }
+  }, [stage, url, pipeline.status, pipeline.scan, pipeline.analysis])
+
   // photo is only present when the camera was used — the paste fallback has
   // nothing to photograph.
   const handleDecoded = (text, capturedPhoto = null) => {
@@ -41,6 +52,7 @@ function App() {
   }
 
   const scanAgain = () => {
+    openedRef.current = null
     pipeline.reset()
     setUrl(null)
     setTyped('')
@@ -147,6 +159,7 @@ function App() {
           {pipeline.status === 'error' && (
             <section className="card">
               <div className="error">
+                <p>Could not verify this website. It has not been opened.</p>
                 <p>{pipeline.error}</p>
               </div>
               <button type="button" onClick={scanAgain}>
