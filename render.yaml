@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: qr-check
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: DATA_DIR
+        value: /tmp/qr-check-data
+      - key: APP_OPENAI_API_KEY
+        sync: false
+      - key: URLSCAN_KEY
+        sync: false
+      - key: APP_PASSWORD
+        sync: false
