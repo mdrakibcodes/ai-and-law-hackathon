@@ -34,13 +34,22 @@ function App() {
 
   const openedRef = useRef(null)
   useEffect(() => {
-    if (stage !== 'check' || pipeline.status !== 'done') return
-    const destination = safeDestination(url, pipeline.scan, pipeline.analysis)
+    if (stage !== 'check') return
+    const destination = pipeline.status === 'instagram'
+      ? pipeline.directProfile?.url
+      : pipeline.status === 'done' ? safeDestination(url, pipeline.scan, pipeline.analysis) : null
     if (destination && openedRef.current !== destination) {
       openedRef.current = destination
+      if (pipeline.status === 'instagram') {
+        const timer = setTimeout(() => window.location.assign(destination), 1200)
+        return () => {
+          clearTimeout(timer)
+          if (openedRef.current === destination) openedRef.current = null
+        }
+      }
       window.location.assign(destination)
     }
-  }, [stage, url, pipeline.status, pipeline.scan, pipeline.analysis])
+  }, [stage, url, pipeline.status, pipeline.scan, pipeline.analysis, pipeline.directProfile])
 
   // photo is only present when the camera was used — the paste fallback has
   // nothing to photograph.
@@ -153,6 +162,14 @@ function App() {
               <div className="bar">
                 <div className="bar__fill" />
               </div>
+            </section>
+          )}
+
+          {pipeline.status === 'instagram' && (
+            <section className="card">
+              <p className="verdict--headline">Safe Instagram link — opening account…</p>
+              <p>Official Instagram address confirmed. Account contents, existence and ownership have not been checked.</p>
+              <a className="link" href={pipeline.directProfile.url} rel="noreferrer">Open Instagram profile</a>
             </section>
           )}
 

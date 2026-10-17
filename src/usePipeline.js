@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { instagramProfileLink } from './instagram.js'
 
-// All scan evidence, analysis and verdict caching are owned by the backend.
+// Scans use server-owned evidence. Official Instagram profile links follow the
+// explicit direct-open preference, with no fabricated account or safety verdict.
 export function usePipeline() {
+  const [directProfile, setDirectProfile] = useState(null)
   const [status, setStatus] = useState('idle')
   const [scan, setScan] = useState(null)
   const [analysis, setAnalysis] = useState(null)
@@ -14,6 +17,7 @@ export function usePipeline() {
 
   const reset = useCallback(() => {
     runIdRef.current += 1
+    setDirectProfile(null)
     setStatus('idle')
     setScan(null)
     setAnalysis(null)
@@ -25,11 +29,19 @@ export function usePipeline() {
     const runId = (runIdRef.current += 1)
     const alive = () => runIdRef.current === runId
 
+    setDirectProfile(null)
     setStatus('cached')
     setScan(null)
     setAnalysis(null)
     setFromCache(false)
     setError(null)
+
+    const profile = instagramProfileLink(url)
+    if (profile) {
+      setDirectProfile(profile)
+      setStatus('instagram')
+      return
+    }
 
     try {
       setStatus('scanning')
@@ -54,7 +66,7 @@ export function usePipeline() {
     }
   }, [])
 
-  return { status, scan, analysis, fromCache, error, run, reset }
+  return { status, scan, analysis, directProfile, fromCache, error, run, reset }
 }
 
 export default usePipeline

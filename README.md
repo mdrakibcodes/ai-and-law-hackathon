@@ -103,3 +103,16 @@ is the official current host; `chat.openai.com` is the legacy address. This avoi
 outdated model knowledge treating the canonical host as a lookalike. It does not
 bypass content inspection or malicious scanner findings, and does not extend to
 similar-looking or suffixed hostnames.
+
+
+### Direct Instagram profile links
+
+At the user's request, exact HTTPS `instagram.com` / `www.instagram.com` profile
+URLs open directly without a urlscan or AI request. This is a navigation policy,
+not a safe verdict or username-existence check. The transition screen briefly says “Safe Instagram link” before opening the account.
+That label applies to the official link destination only; it also states that account
+contents/existence/ownership have not been verified. The destination is
+reconstructed as `https://www.instagram.com/<username>/`, dropping recognized
+tracking parameters. Reserved routes, other paths, unknown query parameters,
+credentials, custom ports, fragments and lookalike hosts use the normal scanner.
+A nonexistent profile may therefore open Instagram's own not-found screen.
