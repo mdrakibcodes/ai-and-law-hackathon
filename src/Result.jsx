@@ -1,9 +1,8 @@
-import { useState } from 'react'
 import Screenshot from './Screenshot.jsx'
 
 const VERDICT_COPY = {
-  dangerous: { tone: 'bad', title: 'Unsafe — website blocked' },
-  suspicious: { tone: 'warn', title: 'Warning signs found — website blocked' },
+  dangerous: { tone: 'bad', title: '⚠ Unsafe — do not open this website' },
+  suspicious: { tone: 'warn', title: '⚠ Potentially unsafe — website blocked' },
   unverified: { tone: 'warn', title: 'Unable to verify — no safety verdict' },
   safe: { tone: 'ok', title: 'Safe verdict — opening website…' },
 }
@@ -106,7 +105,6 @@ function Result({ scan, analysis, decodedUrl, photo, fromCache, onScanAgain }) {
       )}
 
 
-      <ReportScam analysis={analysis} domain={finalDomain} />
 
       <div className="actions">
         {fromCache && <p className="hint">Loaded from the local cache.</p>}
@@ -120,61 +118,6 @@ function Result({ scan, analysis, decodedUrl, photo, fromCache, onScanAgain }) {
         </button>
       </div>
     </section>
-  )
-}
-
-/**
- * Prototype of the reporting flow. It shows what a real submission would send,
- * but nothing leaves the device — the demo note says so plainly, so nobody
- * believes an authority has actually been contacted.
- */
-function ReportScam({ analysis, domain }) {
-  const [state, setState] = useState('idle') // idle | confirming | sent
-
-  if (!['suspicious', 'dangerous'].includes(analysis.verdict)) return null
-
-  if (state === 'sent') {
-    return (
-      <div className="confirm">
-        <p className="verdict verdict--ok">Report submitted to Scamwatch.</p>
-        <p className="hint demo-note">
-          Prototype only — nothing was sent. A working version would lodge this
-          with Scamwatch or cyber.gov.au.
-        </p>
-      </div>
-    )
-  }
-
-  if (state === 'confirming') {
-    return (
-      <div className="confirm">
-        <h3 className="label">This report would include</h3>
-        <ul className="list">
-          <li>The web address and the domain that served it ({domain})</li>
-          <li>The sandbox screenshot of the page</li>
-          <li>Your photo of the QR code, if you took one</li>
-          <li>
-            The assessment: {analysis.verdict}, {analysis.phishing_probability}%
-            phishing
-          </li>
-          <li>The rounded location, only if you shared it</li>
-        </ul>
-        <div className="actions actions--row">
-          <button type="button" className="button--ghost" onClick={() => setState('idle')}>
-            Cancel
-          </button>
-          <button type="button" onClick={() => setState('sent')}>
-            Send report
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <button type="button" className="button--warn" onClick={() => setState('confirming')}>
-      Report this scam
-    </button>
   )
 }
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import MapView from './MapView.jsx'
 import Result from './Result.jsx'
 import Scanner from './Scanner.jsx'
-import ShareLocation from './ShareLocation.jsx'
+import ScamActions from './ScamActions.jsx'
 import usePipeline from './usePipeline.js'
 import { safeDestination } from './navigation.js'
 import './App.css'
@@ -180,6 +180,13 @@ function App() {
                 <p>No safety assessment was completed. The website has not been opened.</p>
                 <p>{pipeline.error}</p>
               </div>
+              <ScamActions
+                key={url}
+                scan={{ scannedUrl: url, finalDomain: new URL(url).hostname }}
+                analysis={{ verdict: 'unverified', suspected_brand: 'Not verified', phishing_probability: null }}
+                photo={photo}
+                onShared={(pin) => showMap(pin)}
+              />
               <button type="button" onClick={scanAgain}>
                 Scan another
               </button>
@@ -196,12 +203,12 @@ function App() {
                 fromCache={pipeline.fromCache}
                 onScanAgain={scanAgain}
               />
-              {pipeline.analysis.verdict !== 'unverified' && <ShareLocation
+              <ScamActions
                 scan={pipeline.scan}
                 analysis={pipeline.analysis}
                 photo={photo}
                 onShared={(pin) => showMap(pin)}
-              />}
+              />
             </>
           )}
         </>

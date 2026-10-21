@@ -85,8 +85,9 @@ banking passwords, OTPs or unrelated sensitive requests are concrete warning sig
 The analysis separates **safe**, **suspicious**, **dangerous**, and **unverified**.
 Unverified means a scan was declined, login/CAPTCHA/access denial obscured the
 requested content, or the page could not be inspected. It does not mean phishing
-was found. Unverified pages do not get scam reporting or map-warning prompts and
-are not automatically opened. Known form/social hosts are not blanket allowlisted.
+was found. Unverified pages are not automatically opened. Users can explicitly select
+“I suspect a scam” to access reporting and location sharing; these map pins are
+labelled as user-reported suspicions, not AI-confirmed threats. Known form/social hosts are not blanket allowlisted.
 The new calibration uses `verified-scans-v3.json`, ignoring cached verdicts from
 the older policy. Each previously cached URL is checked again after deployment.
 
@@ -116,3 +117,15 @@ reconstructed as `https://www.instagram.com/<username>/`, dropping recognized
 tracking parameters. Reserved routes, other paths, unknown query parameters,
 credentials, custom ports, fragments and lookalike hosts use the normal scanner.
 A nonexistent profile may therefore open Instagram's own not-found screen.
+
+
+### Scam warnings, reporting and location pins
+
+Flagged results show a prominent unsafe/potentially unsafe warning, a link to the
+official Scamwatch report form, and a prompt to pin the QR code location. Reporting
+is completed by the user on Scamwatch; this app never claims a report was submitted.
+Failed/unverified scans offer an explicit “I suspect a scam” action without changing
+the scan verdict. Pins from that action retain `assessment_verdict=unverified` and
+`report_source=user`, without invented phishing percentages. Location sharing asks
+for permission and rounds coordinates to approximately 110 metres. Users should
+only pin their current location when it is where they found the suspicious QR code.

@@ -308,7 +308,7 @@ function LocationDetails({ group, onClose }) {
               <strong>{scan.brand || 'Unknown page'}</strong>
               <p className="url url--small">{scan.domain}</p>
               <p className="hint">
-                {scan.verdict} · {Number(scan.phishing_probability) || 0}% phishing
+                {scan.report_source === 'user' ? 'User-reported suspicion · not verified' : `${scan.verdict} · ${Number(scan.phishing_probability) || 0}% phishing`}
                 {(scan.count ?? 1) > 1 && ` · seen ${scan.count}×`}
               </p>
             </div>

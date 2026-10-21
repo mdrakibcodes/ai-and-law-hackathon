@@ -6,7 +6,7 @@ import { addPin, getCoarseLocation } from './pins.js'
  * prompt. People accept a permission far more readily when they already know
  * what it buys them — and the browser dialog cannot explain that.
  */
-function ShareLocation({ scan, analysis, photo, onShared }) {
+function ShareLocation({ scan, analysis, photo, userReported = false, onShared }) {
   const [state, setState] = useState('offer') // offer | sharing | shared | declined | error
   const [error, setError] = useState(null)
 
@@ -23,8 +23,10 @@ function ShareLocation({ scan, analysis, photo, onShared }) {
         url: scan.scannedUrl,
         domain: scan.finalDomain,
         brand: analysis.suspected_brand,
-        verdict: analysis.verdict,
-        phishing_probability: analysis.phishing_probability,
+        verdict: userReported ? 'suspicious' : analysis.verdict,
+        phishing_probability: userReported ? null : analysis.phishing_probability,
+        report_source: userReported ? 'user' : 'scan',
+        assessment_verdict: analysis.verdict,
         photo,
       })
       setState('shared')
@@ -56,16 +58,17 @@ function ShareLocation({ scan, analysis, photo, onShared }) {
   return (
     <section className="card">
       <h2 className="label">
-        {risky ? 'Warn the next person' : 'Add this to the map'}
+        {userReported ? 'Pin a suspected scam location' : risky ? 'Pin the scam location' : 'Add this to the map'}
       </h2>
+      {userReported && <p className="hint">This pin will be labelled as a user-reported suspicion, not an AI-confirmed scam.</p>}
       <p className="copy">
         {risky
           ? 'Other apps protect the person scanning. Pinning this on the map protects everyone who walks up to this sticker after you.'
           : 'You can pin this scan on the map so others can see it has been checked.'}
       </p>
       <p className="copy copy--muted">
-        To do that we need the location of this QR code, so we need your
-        location. We round it to about 110 metres, store no identifying details,
+        Only share if you are at the place where you found the suspicious QR code.
+        This pins your current location. We round it to about 110 metres, store no identifying details,
         and only use it for this pin.
         {photo ? ' Your photo of the code is shared with the pin.' : ''}
       </p>
@@ -77,7 +80,7 @@ function ShareLocation({ scan, analysis, photo, onShared }) {
           No thanks
         </button>
         <button type="button" onClick={share} disabled={state === 'sharing'}>
-          {state === 'sharing' ? 'Getting location…' : 'Share this location'}
+          {state === 'sharing' ? 'Getting location…' : 'Pin this location'}
         </button>
       </div>
     </section>
